@@ -1,70 +1,74 @@
-import { useState } from 'react'
-import { useAuth } from '../contexts/AuthContext'
-import { useNavigate } from 'react-router-dom'
+import { useState } from "react";
+import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import ThemeToggle from "./ThemeToggle";
 
 function Login() {
-  const [isLogin, setIsLogin] = useState(true)
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
-  const { login, register } = useAuth()
-  const navigate = useNavigate()
+  const [isLogin, setIsLogin] = useState(true);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { login, register } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setError('')
+    e.preventDefault();
+    setError("");
 
     // Validation
     if (!username.trim() || !password) {
-      setError('Username and password are required')
-      return
+      setError("Username and password are required");
+      return;
     }
 
     if (!isLogin) {
       if (username.trim().length < 3) {
-        setError('Username must be at least 3 characters')
-        return
+        setError("Username must be at least 3 characters");
+        return;
       }
       if (password.length < 6) {
-        setError('Password must be at least 6 characters')
-        return
+        setError("Password must be at least 6 characters");
+        return;
       }
       if (password !== confirmPassword) {
-        setError('Passwords do not match')
-        return
+        setError("Passwords do not match");
+        return;
       }
     }
 
-    setLoading(true)
+    setLoading(true);
 
     try {
       const result = isLogin
         ? await login(username.trim(), password)
-        : await register(username.trim(), password)
+        : await register(username.trim(), password);
 
       if (result.success) {
-        navigate('/')
+        navigate("/");
       } else {
-        setError(result.error || 'Authentication failed')
+        setError(result.error || "Authentication failed");
       }
     } catch (err) {
-      setError('An unexpected error occurred')
+      setError("An unexpected error occurred");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const toggleMode = () => {
-    setIsLogin(!isLogin)
-    setError('')
-    setPassword('')
-    setConfirmPassword('')
-  }
+    setIsLogin(!isLogin);
+    setError("");
+    setPassword("");
+    setConfirmPassword("");
+  };
 
   return (
-    <div className="min-vh-100 d-flex align-items-center justify-content-center bg-light">
+    <div className="min-vh-100 d-flex align-items-center justify-content-center bg-body-tertiary position-relative">
+      <div className="position-absolute top-0 end-0 p-3" style={{ zIndex: 10 }}>
+        <ThemeToggle variant="surface" />
+      </div>
       <div className="container">
         <div className="row justify-content-center">
           <div className="col-md-6 col-lg-4">
@@ -72,13 +76,26 @@ function Login() {
               <div className="card-body p-4">
                 <div className="text-center mb-4">
                   <h2 className="h4 mb-2">
-                    <svg style={{width: '2rem', height: '2rem'}} className="text-primary me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    <svg
+                      style={{ width: "2rem", height: "2rem" }}
+                      className="text-primary me-2"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                      />
                     </svg>
                     SMS Backup Viewer
                   </h2>
                   <p className="text-muted mb-0">
-                    {isLogin ? 'Sign in to your account' : 'Create a new account'}
+                    {isLogin
+                      ? "Sign in to your account"
+                      : "Create a new account"}
                   </p>
                 </div>
 
@@ -116,7 +133,9 @@ function Login() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
-                      autoComplete={isLogin ? 'current-password' : 'new-password'}
+                      autoComplete={
+                        isLogin ? "current-password" : "new-password"
+                      }
                       disabled={loading}
                     />
                   </div>
@@ -146,11 +165,15 @@ function Login() {
                   >
                     {loading ? (
                       <>
-                        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                        {isLogin ? 'Signing in...' : 'Creating account...'}
+                        <span
+                          className="spinner-border spinner-border-sm me-2"
+                          role="status"
+                          aria-hidden="true"
+                        ></span>
+                        {isLogin ? "Signing in..." : "Creating account..."}
                       </>
                     ) : (
-                      <>{isLogin ? 'Sign In' : 'Create Account'}</>
+                      <>{isLogin ? "Sign In" : "Create Account"}</>
                     )}
                   </button>
 
@@ -163,7 +186,7 @@ function Login() {
                     >
                       {isLogin
                         ? "Don't have an account? Sign up"
-                        : 'Already have an account? Sign in'}
+                        : "Already have an account? Sign in"}
                     </button>
                   </div>
                 </form>
@@ -173,7 +196,7 @@ function Login() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default Login
+export default Login;

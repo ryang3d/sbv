@@ -1,9 +1,8 @@
 services:
   sbv:
-    # Use pre-built image from GitHub Container Registry
-    # For local development, comment out 'image' and uncomment 'build: .' below
-    image: ghcr.io/lowcarbdev/sbv:stable
-    # build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: sbv
     ports:
       - "8081:8081"
@@ -17,7 +16,15 @@ services:
       - PGID=1000
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8081/api/health"]
+      test:
+        [
+          "CMD",
+          "wget",
+          "--quiet",
+          "--tries=1",
+          "--spider",
+          "http://localhost:8081/api/health",
+        ]
       interval: 30s
       timeout: 10s
       retries: 3

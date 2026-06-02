@@ -18,7 +18,10 @@ ENV VITE_API_URL=/api
 RUN npm run build
 
 # Stage 2: Build backend
-FROM golang:1.25-alpine AS backend-builder
+FROM golang:1.25-alpine3.21 AS backend-builder
+
+# go.mod may require a newer patch than the base image; auto-download toolchain
+ENV GOTOOLCHAIN=auto
 
 WORKDIR /app
 
@@ -64,7 +67,9 @@ COPY --from=frontend-builder /app/frontend/dist ./frontend/dist
 
 # Copy entrypoint script
 COPY docker-entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+# Strip CRLF if checked out on Windows (otherwise shebang becomes /bin/sh\r)
+RUN sed -i 's/\r$//' /usr/local/bin/docker-entrypoint.sh \
+    && chmod +x /usr/local/bin/docker-entrypoint.sh
 
 # Create data directory for database
 RUN mkdir -p /data

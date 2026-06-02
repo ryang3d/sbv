@@ -18,6 +18,8 @@ frontend/.env
 # General
 *.log
 *.tmp
+nul
+DARKMODE_PLAN.MD
 .DS_Store
 ._.DS_Store
 .vscode/
